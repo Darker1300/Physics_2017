@@ -89,11 +89,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Application3D.cpp" />
+    <ClCompile Include="Body.cpp" />
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PhysicObject.cpp" />
+    <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="Sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="Application3D.h" />
+    <ClInclude Include="Body.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="DEBUG_NEW_LEAK_DETECT.h" />
+    <ClInclude Include="DEBUG_WINDOWS_ERR_MSG.h" />
+    <ClInclude Include="Engine.h" />
+    <ClInclude Include="PhysicObject.h" />
+    <ClInclude Include="Plane.h" />
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Shape.h" />
+    <ClInclude Include="Sphere.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
