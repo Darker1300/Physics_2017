@@ -1,8 +1,12 @@
 #pragma once
-class Engine
-{
-public:
-	Engine();
-	~Engine();
-};
 
+namespace Physics {
+
+	class Engine
+	{
+	public:
+		Engine();
+		~Engine();
+	};
+
+}

@@ -21,6 +21,7 @@ public:
 	// these functions must be implemented by a derived class
 	virtual bool startup() = 0;
 	virtual void shutdown() = 0;
+	virtual void fixedUpdate(float deltaTime) = 0;
 	virtual void update(float deltaTime) = 0;
 	virtual void draw() = 0;
 

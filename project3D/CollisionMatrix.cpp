@@ -1,5 +1,6 @@
 #include "Collision.h"
 
+using namespace Physics;
 using namespace Collision;
 
 // Create an static array of all collision functions

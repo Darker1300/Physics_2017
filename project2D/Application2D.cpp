@@ -38,6 +38,10 @@ void Application2D::shutdown() {
 	delete m_2dRenderer;
 }
 
+void Application2D::fixedUpdate(float deltaTime)
+{
+}
+
 void Application2D::update(float deltaTime) {
 
 	m_timer += deltaTime;

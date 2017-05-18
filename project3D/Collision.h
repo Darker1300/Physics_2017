@@ -2,27 +2,31 @@
 
 #include <glm\vec3.hpp>
 
-class PhysicsObject;
+namespace Physics {
 
-namespace Collision 
-{
-	struct CollisionInfo {
-		bool		collided;
-		glm::vec3	normal;
-		float		penetration;
-	};
+	class Body;
 
-	// Define a function pointer type for our collision functions
-	typedef bool(*CollisionFunction)(const PhysicsObject * _obj1, const PhysicsObject * _obj2, CollisionInfo & _info);
-	extern const CollisionFunction CollisionMatrix[];
+	namespace Collision
+	{
+		struct CollisionInfo {
+			bool		collided;
+			glm::vec3	normal;
+			float		penetration;
+		};
 
-	bool TestCollision(const PhysicsObject* _obj1, const PhysicsObject* _obj2, CollisionInfo& _info);
+		// Define a function pointer type for our collision functions
+		typedef bool(*CollisionFunction)(const Body * _obj1, const Body * _obj2, CollisionInfo & _info);
+		extern const CollisionFunction CollisionMatrix[];
 
-	void ResolveCollision(PhysicsObject* _obj1, PhysicsObject* _obj2, CollisionInfo& _info);
-	void HandleSeperation(PhysicsObject* _obj1, PhysicsObject* _obj2, CollisionInfo& _info);
-	void HandleVelocityChange(PhysicsObject* _obj1, PhysicsObject* _obj2, CollisionInfo& _info);
+		bool TestCollision(const Body* _obj1, const Body* _obj2, CollisionInfo& _info);
 
-	// Test Collision Functions
-	bool TestSpherePlane(const PhysicsObject* _sphere, const PhysicsObject* _plane, CollisionInfo& _info);
-	bool TestPlaneSphere(const PhysicsObject* _plane, const PhysicsObject* _sphere, CollisionInfo& _info);
+		void ResolveCollision(Body* _obj1, Body* _obj2, CollisionInfo& _info);
+		void HandleSeperation(Body* _obj1, Body* _obj2, CollisionInfo& _info);
+		void HandleVelocityChange(Body* _obj1, Body* _obj2, CollisionInfo& _info);
+
+		// Test Collision Functions
+		bool TestSpherePlane(const Body* _sphere, const Body* _plane, CollisionInfo& _info);
+		bool TestPlaneSphere(const Body* _plane, const Body* _sphere, CollisionInfo& _info);
+	}
+
 }

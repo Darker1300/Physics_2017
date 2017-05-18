@@ -1,8 +1,13 @@
 #include "Application3D.h"
+
+#include "DEBUG_NEW_LEAK_DETECT.h"
+
 #include "Gizmos.h"
 #include "Input.h"
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+
+#include "Scene.h"
 
 using glm::vec3;
 using glm::vec4;
@@ -18,7 +23,7 @@ Application3D::~Application3D() {
 }
 
 bool Application3D::startup() {
-	
+
 	setBackgroundColour(0.25f, 0.25f, 0.25f);
 
 	// initialise gizmo primitive counts
@@ -27,15 +32,24 @@ bool Application3D::startup() {
 	// create simple camera transforms
 	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f,
-										  getWindowWidth() / (float)getWindowHeight(),
-										  0.1f, 1000.f);
+		getWindowWidth() / (float)getWindowHeight(),
+		0.1f, 1000.f);
+
+	m_scene = new Physics::Scene((Application3D*)this);
 
 	return true;
 }
 
 void Application3D::shutdown() {
 
+	delete m_scene;
+
 	Gizmos::destroy();
+}
+
+void Application3D::fixedUpdate(float deltaTime)
+{
+	m_scene->Update(deltaTime);
 }
 
 void Application3D::update(float deltaTime) {
@@ -44,37 +58,38 @@ void Application3D::update(float deltaTime) {
 	float time = getTime();
 
 	// rotate camera
-	m_viewMatrix = glm::lookAt(vec3(glm::sin(time) * 10, 10, glm::cos(time) * 10),
-							   vec3(0), vec3(0, 1, 0));
+	m_viewMatrix = glm::lookAt(vec3(glm::sin(time) * 30, 10, glm::cos(time) * 30),
+		vec3(0), vec3(0, 1, 0));
 
 	// wipe the gizmos clean for this frame
 	Gizmos::clear();
 
-	// draw a simple grid with gizmos
-	vec4 white(1);
-	vec4 black(0, 0, 0, 1);
-	for (int i = 0; i < 21; ++i) {
-		Gizmos::addLine(vec3(-10 + i, 0, 10),
-						vec3(-10 + i, 0, -10),
-						i == 10 ? white : black);
-		Gizmos::addLine(vec3(10, 0, -10 + i),
-						vec3(-10, 0, -10 + i),
-						i == 10 ? white : black);
-	}
-
 	// add a transform so that we can see the axis
 	Gizmos::addTransform(mat4(1));
 
-	// demonstrate a few shapes
-	Gizmos::addAABBFilled(vec3(0), vec3(1), vec4(0, 0.5f, 1, 0.25f));
-	Gizmos::addSphere(vec3(5, 0, 5), 1, 8, 8, vec4(1, 0, 0, 0.5f));
-	Gizmos::addRing(vec3(5, 0, -5), 1, 1.5f, 8, vec4(0, 1, 0, 1));
-	Gizmos::addDisk(vec3(-5, 0, 5), 1, 16, vec4(1, 1, 0, 1));
-	Gizmos::addArc(vec3(-5, 0, -5), 0, 2, 1, 8, vec4(1, 0, 1, 1));
+	// draw a simple grid with gizmos
+	/*vec4 white(1);
+	vec4 black(0, 0, 0, 1);
+	for (int i = 0; i < 21; ++i) {
+		Gizmos::addLine(vec3(-10 + i, 0, 10),
+			vec3(-10 + i, 0, -10),
+			i == 10 ? white : black);
+		Gizmos::addLine(vec3(10, 0, -10 + i),
+			vec3(-10, 0, -10 + i),
+			i == 10 ? white : black);
+	}*/
 
-	mat4 t = glm::rotate(time, glm::normalize(vec3(1, 1, 1)));
-	t[3] = vec4(-2, 0, 0, 1);
-	Gizmos::addCylinderFilled(vec3(0), 0.5f, 1, 5, vec4(0, 1, 1, 1), &t);
+	//// demonstrate a few shapes
+	//Gizmos::addAABBFilled(vec3(0), vec3(1), vec4(0, 0.5f, 1, 0.25f));
+	//Gizmos::addSphere(vec3(5, 0, 5), 1, 8, 8, vec4(1, 0, 0, 0.5f));
+	//Gizmos::addRing(vec3(5, 0, -5), 1, 1.5f, 8, vec4(0, 1, 0, 1));
+	//Gizmos::addDisk(vec3(-5, 0, 5), 1, 16, vec4(1, 1, 0, 1));
+	//Gizmos::addArc(vec3(-5, 0, -5), 0, 2, 1, 8, vec4(1, 0, 1, 1));
+
+	//mat4 t = glm::rotate(time, glm::normalize(vec3(1, 1, 1)));
+	//t[3] = vec4(-2, 0, 0, 1);
+	//Gizmos::addCylinderFilled(vec3(0), 0.5f, 1, 5, vec4(0, 1, 1, 1), &t);
+
 
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
@@ -90,8 +105,10 @@ void Application3D::draw() {
 
 	// update perspective in case window resized
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f,
-										  getWindowWidth() / (float)getWindowHeight(),
-										  0.1f, 1000.f);
+		getWindowWidth() / (float)getWindowHeight(),
+		0.1f, 1000.f);
+
+	m_scene->DrawGizmos();
 
 	Gizmos::draw(m_projectionMatrix * m_viewMatrix);
 }

@@ -3,6 +3,10 @@
 #include "Application.h"
 #include <glm/mat4x4.hpp>
 
+namespace Physics {
+	class Scene;
+}
+
 class Application3D : public aie::Application {
 public:
 
@@ -12,6 +16,7 @@ public:
 	virtual bool startup();
 	virtual void shutdown();
 
+	virtual void fixedUpdate(float deltaTime);
 	virtual void update(float deltaTime);
 	virtual void draw();
 
@@ -19,4 +24,5 @@ protected:
 
 	glm::mat4	m_viewMatrix;
 	glm::mat4	m_projectionMatrix;
+	Physics::Scene* m_scene;
 };

@@ -3,16 +3,27 @@
 #include "Shape.h"
 #include <glm\vec3.hpp>
 
-class Plane :
-	public Shape
-{
-public:
-	Plane();
-	~Plane();
+namespace Physics {
 
-	glm::vec3 GetNormal() const { return m_normal; }
+	class Plane :
+		public Shape
+	{
+	public:
+		// -- Implicit basic constructor --
+		Plane() : Shape(ShapeType::Plane), m_normal(glm::vec3(0, 1, 0)) {}
+		// -- Explicit basic constructor --
+		Plane(const glm::vec3& _normal) : Shape(ShapeType::Plane), m_normal(_normal) {}
 
-private:
-	glm::vec3 m_normal;
-};
+		~Plane() {}
 
+		glm::vec3 GetNormal() const { return m_normal; }
+
+		
+		void DrawGizmo(const Body* const _body, const glm::vec4& _colour = glm::vec4(1, 0, 0, 0.1f)) const;
+
+		// TODO move to private
+		glm::vec3 m_normal;
+	private:
+	};
+
+}

@@ -3,16 +3,30 @@
 #include <vector>
 #include <glm\vec3.hpp>
 
-class PhysicsObject;
+class Application3D;
 
-class Scene
-{
-public:
-	Scene();
-	~Scene();
+namespace Physics {
 
-	void Update(float _deltaTime);
+	class Body;
 
-	glm::vec3 m_gravity;
-	std::vector<PhysicsObject*> m_objects;
-};
+	class Scene
+	{
+	public:
+		Scene(Application3D* _app);
+		~Scene();
+
+		void Start();
+		void Update(float _deltaTime);
+		void DrawGizmos() const;
+		void Clear();
+
+		void AddBody(Body* _body);
+
+		glm::vec3 m_gravity;
+		std::vector<Body*> m_objects;
+
+	private:
+		Application3D* m_app;
+	};
+
+}

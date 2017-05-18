@@ -1,28 +1,113 @@
 #include "Body.h"
 
+#include "DEBUG_NEW_LEAK_DETECT.h"
+#include "DEBUG_WINDOWS_ERR_MSG.h"
 
+using namespace Physics;
 
 Body::Body()
+	: Body(1.0f)
 {
 }
 
+Body::Body(const float _mass)
+	: m_isStatic(false)
+	, m_position()
+	, m_mass(_mass)
+	, m_velocity()
+	, m_force()
+	, m_acceleration()
+	, m_shape(nullptr)
+{
+}
 
 Body::~Body()
 {
+	if (m_shape != nullptr)
+		delete m_shape;
 }
 
-float Body::GetMass()
+glm::vec3 Body::GetPosition() const
+{
+	return m_position;
+}
+
+float Body::GetMass() const
 {
 	return m_mass;
 }
 
-float Body::GetMassInverse()
+glm::vec3 Body::GetVelocity() const
 {
-	return m_massInverse;
+	return m_velocity;
 }
 
-void Body::SetMass(float _mass)
+bool Body::GetIsStatic() const
+{
+	return m_isStatic;
+}
+
+void Body::SetPosition(const glm::vec3 & _position)
+{
+	m_position = _position;
+}
+
+void Body::SetMass(const float _mass)
 {
 	m_mass = _mass;
-	m_massInverse = m_mass == 0 ? 0 : 1 / m_mass;
+}
+
+void Body::SetVelocity(const glm::vec3 & _velocity)
+{
+	m_velocity = _velocity;
+}
+
+void Body::SetIsStatic(const bool _isStatic)
+{
+	m_isStatic = _isStatic;
+}
+
+void Body::AddForce(const glm::vec3 & _force)
+{
+	m_force += _force;
+}
+
+void Body::AddAcceleration(const glm::vec3 & _acceleration)
+{
+	m_acceleration += _acceleration;
+}
+
+void Body::AddVelocity(const glm::vec3 & _velocity)
+{
+	m_velocity += _velocity;
+}
+
+void Body::Update(float _deltaTime)
+{
+	m_acceleration += m_force / m_mass;
+	m_velocity = m_velocity + m_acceleration * _deltaTime;
+	m_position = m_position + m_velocity * _deltaTime;
+
+	m_force = glm::vec3(0.0f);
+	m_acceleration = glm::vec3(0.0f);
+}
+
+void Body::SetShape(Shape * _shape)
+{
+	RemoveShape();
+	m_shape = _shape;
+}
+
+void Body::RemoveShape()
+{
+	if (m_shape != nullptr) {
+		delete m_shape;
+		m_shape = nullptr;
+	}
+}
+
+void Physics::Body::DrawGizmo(const glm::vec4& _colour) const
+{
+	if (m_shape != nullptr)
+		m_shape->DrawGizmo(this, _colour);
 }
