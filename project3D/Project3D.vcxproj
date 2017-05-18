@@ -21,14 +21,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -93,11 +93,11 @@
     <ClCompile Include="Application3D.cpp" />
     <ClCompile Include="Body.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="CollisionMatrix.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PhysicObject.cpp" />
+    <ClCompile Include="PhysicsObject.cpp" />
     <ClCompile Include="Plane.cpp" />
-    <ClCompile Include="Point.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="Sphere.cpp" />
@@ -110,7 +110,7 @@
     <ClInclude Include="DEBUG_NEW_LEAK_DETECT.h" />
     <ClInclude Include="DEBUG_WINDOWS_ERR_MSG.h" />
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="PhysicObject.h" />
+    <ClInclude Include="PhysicsObject.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Scene.h" />

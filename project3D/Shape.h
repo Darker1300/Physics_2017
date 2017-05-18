@@ -2,7 +2,7 @@
 
 enum class ShapeType
 {
-	Invalid,
+	Invalid = -1,
 	Point,
 	Plane,
 	Sphere,
@@ -18,11 +18,14 @@ enum class ShapeType
 class Shape
 {
 public:
+	Shape() = delete;
 	Shape(ShapeType _type = ShapeType::Invalid);
 	virtual ~Shape();
 
-	bool isType(const Shape& _other) { return m_type == _other.m_type; }
+	ShapeType GetType() const { return m_type; }
+	bool isType(const Shape& _other) const { return m_type == _other.m_type; }
 
+private:
 	ShapeType m_type;
 };
 

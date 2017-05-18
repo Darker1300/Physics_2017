@@ -1,5 +1,7 @@
 #pragma once
 
+// Must Change ProjectSetting->General->CharacterSet = Use Multi-Byte Character Set.
+
 // USE_CONSOLE_LOG:		true: Use Console	false: Use Windows MessageBox.
 #ifndef USE_CONSOLE_LOG
 // Default: USE_CONSOLE_LOG
