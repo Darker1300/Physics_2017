@@ -14,7 +14,7 @@ namespace Physics {
 			float		penetration;
 		};
 
-		// Define a function pointer type for our collision functions
+		// Function pointer type for our collision functions
 		typedef bool(*CollisionFunction)(const Body * _obj1, const Body * _obj2, CollisionInfo & _info);
 		extern const CollisionFunction CollisionMatrix[];
 
@@ -24,9 +24,21 @@ namespace Physics {
 		void HandleSeperation(Body* _obj1, Body* _obj2, CollisionInfo& _info);
 		void HandleVelocityChange(Body* _obj1, Body* _obj2, CollisionInfo& _info);
 
-		// Test Collision Functions
-		bool TestSpherePlane(const Body* _sphere, const Body* _plane, CollisionInfo& _info);
-		bool TestPlaneSphere(const Body* _plane, const Body* _sphere, CollisionInfo& _info);
+		namespace Test {
+			// ----- Homogeneous
+
+			bool SphereSphere(const Body* _sphereA, const Body* _sphereB, CollisionInfo& _info);
+			//TODO\\ bool PlanePlane(const Body* _planeA, const Body* _planeB, CollisionInfo& _info);
+
+			// ----- Heterogeneous
+
+			bool SpherePlane(const Body* _sphere, const Body* _plane, CollisionInfo& _info);
+
+			// ----- Heterogeneous Wrappers
+
+			bool PlaneSphere(const Body* _plane, const Body* _sphere, CollisionInfo& _info);
+		}
+
 	}
 
 }

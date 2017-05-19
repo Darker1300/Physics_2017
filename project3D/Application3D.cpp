@@ -58,8 +58,8 @@ void Application3D::update(float deltaTime) {
 	float time = getTime();
 
 	// rotate camera
-	m_viewMatrix = glm::lookAt(vec3(glm::sin(time) * 30, 10, glm::cos(time) * 30),
-		vec3(0), vec3(0, 1, 0));
+	//m_viewMatrix = glm::lookAt(vec3(glm::sin(time) * 30, 10, glm::cos(time) * 30),
+	//	vec3(0), vec3(0, 1, 0));
 
 	// wipe the gizmos clean for this frame
 	Gizmos::clear();

@@ -2,6 +2,8 @@
 
 using namespace Physics;
 using namespace Collision;
+using namespace Test;
+
 
 // Create an static array of all collision functions
 // This is ordered based on Shape::ShapeType
@@ -18,7 +20,7 @@ const CollisionFunction Collision::CollisionMatrix[] = {
 
 	/*Plane		&& Point		*/	nullptr,
 	/*Plane		&& Plane		*/	nullptr,
-	/*Plane		&& Sphere		*/	TestPlaneSphere,
+	/*Plane		&& Sphere		*/	PlaneSphere,
 	/*Plane		&& AABB			*/	nullptr,
 	/*Plane		&& Box			*/	nullptr,
 	/*Plane		&& Capsule		*/	nullptr,
@@ -27,8 +29,8 @@ const CollisionFunction Collision::CollisionMatrix[] = {
 	/*Plane		&& MeshConvex	*/	nullptr,
 
 	/*Sphere	&& Point		*/	nullptr,
-	/*Sphere	&& Plane		*/	TestSpherePlane,
-	/*Sphere	&& Sphere		*/	nullptr,
+	/*Sphere	&& Plane		*/	SpherePlane,
+	/*Sphere	&& Sphere		*/	SphereSphere,
 	/*Sphere	&& AABB			*/	nullptr,
 	/*Sphere	&& Box			*/	nullptr,
 	/*Sphere	&& Capsule		*/	nullptr,
