@@ -16,11 +16,13 @@ namespace Physics {
 		float		GetMass() const;
 		glm::vec3	GetVelocity() const;
 		bool		GetIsStatic() const;
+		float		GetRestitution() const;
 
 		void SetPosition(const glm::vec3& _position);
 		void SetMass(const float _mass);
 		void SetVelocity(const glm::vec3& _velocity);
 		void SetIsStatic(const bool _isStatic);
+		void SetRestitution(const float _restitution);
 
 		void AddForce(const glm::vec3& _force);
 		void AddAcceleration(const glm::vec3& _acceleration);
@@ -44,6 +46,8 @@ namespace Physics {
 
 		glm::vec3	m_force;
 		glm::vec3	m_acceleration;
+
+		float		m_restitution;
 
 		Shape* m_shape;
 	};

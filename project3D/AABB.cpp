@@ -1,17 +1,11 @@
 #include "AABB.h"
 
+#include <Gizmos.h>
+#include "Body.h"
+
 using namespace Physics;
 
-AABB::AABB() : Shape(ShapeType::AABB)
+void AABB::DrawGizmo(const Body * const _body, const glm::vec4 & _colour) const
 {
-}
-
-
-AABB::~AABB()
-{
-}
-
-void Physics::AABB::DrawGizmo(const Body * const _body, const glm::vec4 & _colour) const
-{
-	// TODO
+	aie::Gizmos::addAABB(_body->GetPosition(), GetExtents(), _colour);
 }

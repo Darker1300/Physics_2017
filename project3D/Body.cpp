@@ -17,6 +17,7 @@ Body::Body(const float _mass)
 	, m_velocity()
 	, m_force()
 	, m_acceleration()
+	, m_restitution(0.25f)
 	, m_shape(nullptr)
 {
 }
@@ -47,6 +48,11 @@ bool Body::GetIsStatic() const
 	return m_isStatic;
 }
 
+float Physics::Body::GetRestitution() const
+{
+	return m_restitution;
+}
+
 void Body::SetPosition(const glm::vec3 & _position)
 {
 	m_position = _position;
@@ -65,6 +71,11 @@ void Body::SetVelocity(const glm::vec3 & _velocity)
 void Body::SetIsStatic(const bool _isStatic)
 {
 	m_isStatic = _isStatic;
+}
+
+void Physics::Body::SetRestitution(const float _restitution)
+{
+	m_restitution = _restitution;
 }
 
 void Body::AddForce(const glm::vec3 & _force)

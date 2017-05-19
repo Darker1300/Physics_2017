@@ -2,10 +2,12 @@
 
 #include "DEBUG_NEW_LEAK_DETECT.h"
 
+#include <Gizmos.h>
 #include "Body.h"
 #include "Collision.h"
 #include "Plane.h"
 #include "Sphere.h"
+#include "AABB.h"
 #include "Application3D.h"
 
 using namespace Physics;
@@ -29,13 +31,32 @@ void Physics::Scene::Start()
 	planeBody->SetMass(100000.0f);
 	planeBody->SetShape(new Plane());
 	planeBody->SetIsStatic(true);
-
 	AddBody(planeBody);
 
-	Body* ballBody = new Body(50);
+	Body* ballBody = new Body();
+	ballBody->SetMass(50);
 	ballBody->SetShape(new Sphere(0.6f));
 	ballBody->SetPosition({ 1,2,3 });
 	AddBody(ballBody);
+
+	Body* ballBodyB = new Body();
+	ballBodyB->SetMass(50);
+	ballBodyB->SetShape(new Sphere(0.6f));
+	ballBodyB->SetPosition({ 1.1f,5,3 });
+	AddBody(ballBodyB);
+
+	Body* boxBodyFloor = new Body();
+	boxBodyFloor->SetMass(100000.0f);
+	boxBodyFloor->SetShape(new AABB(10));
+	boxBodyFloor->SetIsStatic(true);
+	boxBodyFloor->SetPosition({ 0,-6,0 });
+	AddBody(boxBodyFloor);
+
+	Body* boxBodyB = new Body();
+	boxBodyB->SetMass(75);
+	boxBodyB->SetShape(new AABB(0.5f));
+	boxBodyB->SetPosition({ 0.5f,9,0.5f });
+	AddBody(boxBodyB);
 }
 
 void Scene::Update(float _deltaTime)
@@ -48,10 +69,27 @@ void Scene::Update(float _deltaTime)
 		}
 
 		// Move plane
-		if (obj->GetShape()->GetType() == ShapeType::Plane) {
-			auto pos = obj->GetPosition();
+		switch (obj->GetShape()->GetType())
+		{
+		case ShapeType::Plane:
+		{
+			// Move floor
+			glm::vec3 pos = obj->GetPosition();
 			pos.y = (-1.0f + (1.0f - -1.0f) * sinf(m_app->getTime()));
 			obj->SetPosition(pos);//  m_normal.x = (-0.15f + (0.25f - -0.15f) * sinf(m_app->getTime()));
+		}
+		break;
+		case ShapeType::AABB:
+		{
+			glm::vec3 pos = obj->GetPosition();
+			if (pos.y < 0) {
+				pos.y = (-10.0f + (-1.0f - -10.0f) * sinf(m_app->getTime()));
+				obj->SetPosition(pos);//  m_normal.x = (-0.15f + (0.25f - -0.15f) * sinf(m_app->getTime()));
+			}
+		}
+		break;
+		default:
+			break;
 		}
 	}
 
@@ -63,6 +101,7 @@ void Scene::Update(float _deltaTime)
 			objIter2 != m_objects.end();
 			objIter2++)
 		{
+			// Test Collision
 			bool collided = Collision::TestCollision(*objIter1, *objIter2, collisionInfo);
 			if (collided) {
 				// Handle Collision
@@ -74,6 +113,22 @@ void Scene::Update(float _deltaTime)
 
 void Physics::Scene::DrawGizmos() const
 {
+
+	// add a transform so that we can see the axis
+	aie::Gizmos::addTransform(glm::mat4(1));
+
+	// draw a simple grid
+	glm::vec4 white(0.4f);
+	glm::vec4 black(0, 0, 0, 1);
+	for (int i = 0; i < 21; ++i) {
+		aie::Gizmos::addLine(glm::vec3(-10 + i, 0, 10),
+			glm::vec3(-10 + i, 0, -10),
+			i == 10 ? white : black);
+		aie::Gizmos::addLine(glm::vec3(10, 0, -10 + i),
+			glm::vec3(-10, 0, -10 + i),
+			i == 10 ? white : black);
+	}
+
 	for each (Physics::Body* obj in m_objects) {
 		static glm::vec4 col = glm::vec4(0, 0, 0, 0.25f);
 
@@ -87,6 +142,9 @@ void Physics::Scene::DrawGizmos() const
 			break;
 		case Physics::ShapeType::Sphere:
 			col = { 0, 0, 1, 0.25f };
+			break;
+		case Physics::ShapeType::AABB:
+			col = { 0, 1, 1, 0.25f };
 			break;
 		default:
 			col = { 0, 0, 0, 0.25f };

@@ -41,7 +41,7 @@ const CollisionFunction Collision::CollisionMatrix[] = {
 	/*AABB		&& Point		*/	nullptr,
 	/*AABB		&& Plane		*/	nullptr,
 	/*AABB		&& Sphere		*/	nullptr,
-	/*AABB		&& AABB			*/	nullptr,
+	/*AABB		&& AABB			*/	AABBAABB,
 	/*AABB		&& Box			*/	nullptr,
 	/*AABB		&& Capsule		*/	nullptr,
 	/*AABB		&& Ray			*/	nullptr,

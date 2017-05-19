@@ -9,8 +9,11 @@ namespace Physics {
 	{
 	public:
 		// -- Implicit basic constructor --
+
 		Sphere() : m_radius(), Shape(ShapeType::Sphere) {}
+
 		// -- Explicit basic constructor --
+
 		Sphere(const float _radius) : m_radius(_radius), Shape(ShapeType::Sphere) {}
 
 		~Sphere() {}

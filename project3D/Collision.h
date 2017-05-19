@@ -28,6 +28,8 @@ namespace Physics {
 			// ----- Homogeneous
 
 			bool SphereSphere(const Body* _sphereA, const Body* _sphereB, CollisionInfo& _info);
+			bool AABBAABB(const Body* _aabbA, const Body* _aabbB, CollisionInfo& _info);
+
 			//TODO\\ bool PlanePlane(const Body* _planeA, const Body* _planeB, CollisionInfo& _info);
 
 			// ----- Heterogeneous
@@ -37,8 +39,11 @@ namespace Physics {
 			// ----- Heterogeneous Wrappers
 
 			bool PlaneSphere(const Body* _plane, const Body* _sphere, CollisionInfo& _info);
+
+			// ----- Helpers
+			namespace Helper {
+				bool AABBAABB_TestAxis(const glm::vec3& axis, float minA, float maxA, float minB, float maxB, glm::vec3& mtvAxis, float& mtvDistance);
+			}
 		}
-
 	}
-
 }

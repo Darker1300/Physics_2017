@@ -12,9 +12,11 @@ namespace Physics {
 #pragma region Constructors
 
 		// -- Implicit basic constructor --
+
 		Point() : glm::vec3(), Shape(ShapeType::Point) {}
 
 		// -- Explicit basic constructors --
+
 		template <typename T>
 		Point(T const & _type) : glm::vec3(_type), Shape(ShapeType::Point) {}
 
