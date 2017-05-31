@@ -6,6 +6,7 @@
 #include "Input.h"
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "Scene.h"
 
@@ -29,8 +30,12 @@ bool Application3D::startup() {
 	// initialise gizmo primitive counts
 	Gizmos::create(10000, 10000, 10000, 10000);
 
-	// create simple camera transforms
-	m_viewMatrix = glm::lookAt(vec3(10), vec3(0), vec3(0, 1, 0));
+	//// create simple camera transforms
+	//m_cameraPos = glm::vec3(10);
+	//m_viewMatrix = glm::lookAt(m_cameraPos, glm::vec3(0), glm::vec3(0, 1, 0));
+	m_cameraTransform = Transform(glm::vec3(10, 5, 10));
+	m_cameraTransform.LookAt(glm::vec3(0));
+
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f,
 		getWindowWidth() / (float)getWindowHeight(),
 		0.1f, 1000.f);
@@ -58,7 +63,7 @@ void Application3D::update(float deltaTime) {
 	float time = getTime();
 
 	// rotate camera
-	//m_viewMatrix = glm::lookAt(vec3(glm::sin(time) * 30, 10, glm::cos(time) * 30),
+	//m_cameraMatrix = glm::lookAt(vec3(glm::sin(time) * 30, 10, glm::cos(time) * 30),
 	//	vec3(0), vec3(0, 1, 0));
 
 	// wipe the gizmos clean for this frame
@@ -81,6 +86,55 @@ void Application3D::update(float deltaTime) {
 
 	if (input->isKeyDown(aie::INPUT_KEY_ESCAPE))
 		quit();
+
+	const static float turnSpeed = 2.0f;
+
+	//if (input->isKeyDown(aie::INPUT_KEY_LEFT))
+	//	m_cameraTransform.Rotate(glm::angleAxis(deltaTime * turnSpeed, glm::vec3(1, 0, 0)));
+	//if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
+	//	m_cameraTransform.Rotate(glm::angleAxis(deltaTime * -turnSpeed, glm::vec3(1, 0, 0)));
+	//if (input->isKeyDown(aie::INPUT_KEY_UP))
+	//	m_cameraTransform.Rotate(glm::angleAxis(deltaTime * turnSpeed, glm::vec3(0, 0, 1)));
+	//if (input->isKeyDown(aie::INPUT_KEY_DOWN))
+	//	m_cameraTransform.Rotate(glm::angleAxis(deltaTime * -turnSpeed, glm::vec3(0, 0, 1)));
+
+	//if (input->isKeyDown(aie::INPUT_KEY_LEFT))
+	//	m_cameraTransform.Translate(deltaTime * turnSpeed * glm::vec3(1, 0, 0));
+	//if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
+	//	m_cameraTransform.Translate(deltaTime * -turnSpeed * glm::vec3(1, 0, 0));
+	//if (input->isKeyDown(aie::INPUT_KEY_UP))
+	//	m_cameraTransform.Translate(deltaTime * turnSpeed * glm::vec3(0, 0, 1));
+	//if (input->isKeyDown(aie::INPUT_KEY_DOWN))
+	//	m_cameraTransform.Translate(deltaTime * -turnSpeed * glm::vec3(0, 0, 1));
+
+
+	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
+		m_cameraTransform.RotateAround(glm::vec3(0), glm::vec3(0, 1, 0), deltaTime * -turnSpeed);
+	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
+		m_cameraTransform.RotateAround(glm::vec3(0), glm::vec3(0, 1, 0), deltaTime * turnSpeed);
+	if (input->isKeyDown(aie::INPUT_KEY_UP))
+		m_cameraTransform.RotateAround(glm::vec3(0), m_cameraTransform.Right(), deltaTime * -turnSpeed);
+	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
+		m_cameraTransform.RotateAround(glm::vec3(0), m_cameraTransform.Right(), deltaTime * turnSpeed);
+
+	const static float moveSpeed = 5.0f;
+
+	if (input->isKeyDown(aie::INPUT_KEY_KP_ADD))
+		m_cameraTransform.MoveTowards(glm::vec3(0), deltaTime * moveSpeed);
+	if (input->isKeyDown(aie::INPUT_KEY_KP_SUBTRACT))
+		m_cameraTransform.MoveTowards(glm::vec3(0), deltaTime * -moveSpeed);
+	m_cameraTransform.LookAt(glm::vec3(0));
+
+	//if (input->isKeyDown(aie::INPUT_KEY_LEFT))
+	//	m_cameraPos.x += deltaTime * -turnSpeed;
+	//if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
+	//	m_cameraPos.x += deltaTime * turnSpeed;
+	//if (input->isKeyDown(aie::INPUT_KEY_UP))
+	//	m_cameraPos.z += deltaTime * -turnSpeed;
+	//if (input->isKeyDown(aie::INPUT_KEY_DOWN))
+	//	m_cameraPos.z += deltaTime * turnSpeed;
+
+	//m_viewMatrix = glm::lookAt(m_cameraPos, glm::vec3(0), glm::vec3(0, 1, 0));
 }
 
 void Application3D::draw() {
@@ -95,5 +149,6 @@ void Application3D::draw() {
 
 	m_scene->DrawGizmos();
 
-	Gizmos::draw(m_projectionMatrix * m_viewMatrix);
+	Gizmos::draw(m_projectionMatrix * m_cameraTransform.InverseMatrix());
+	//Gizmos::draw(m_projectionMatrix * m_viewMatrix);
 }

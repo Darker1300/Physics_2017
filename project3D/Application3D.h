@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Application.h"
+#include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
+#include "Transform.h"
 
 namespace Physics {
 	class Scene;
@@ -21,8 +23,9 @@ public:
 	virtual void draw();
 
 protected:
-
-	glm::mat4	m_viewMatrix;
+	Transform	m_cameraTransform;
+	//glm::vec3	m_cameraPos;
+	//glm::mat4	m_viewMatrix;
 	glm::mat4	m_projectionMatrix;
 	Physics::Scene* m_scene;
 };
