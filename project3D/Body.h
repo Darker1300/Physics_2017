@@ -33,7 +33,7 @@ namespace Physics {
 		void SetShape(Shape* _shape);
 		void RemoveShape();
 
-		Shape* GetShape() const { return m_shape; }
+		const Shape* GetShape() const { return m_shape; }
 
 		void DrawGizmo(const glm::vec4& _colour) const;
 

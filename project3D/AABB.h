@@ -25,7 +25,7 @@ namespace Physics {
 		glm::vec3 GetMin() const { return -m_extents; }
 		glm::vec3 GetMax() const { return m_extents; }
 
-		void SetSize(const glm::vec3& _size) { m_extents = _size * 2.0f; }
+		void SetSize(const glm::vec3& _size) { m_extents = _size * 0.5f; }
 		void SetExtents(const glm::vec3& _extents) { m_extents = _extents; }
 
 		void DrawGizmo(const Body* const _body, const glm::vec4& _colour = glm::vec4(1, 0, 0, 1)) const;

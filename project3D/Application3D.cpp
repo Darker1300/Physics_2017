@@ -33,7 +33,7 @@ bool Application3D::startup() {
 	//// create simple camera transforms
 	//m_cameraPos = glm::vec3(10);
 	//m_viewMatrix = glm::lookAt(m_cameraPos, glm::vec3(0), glm::vec3(0, 1, 0));
-	m_cameraTransform = Transform(glm::vec3(10, 5, 10));
+	m_cameraTransform = Transform(glm::vec3(0, 5, 10));
 	m_cameraTransform.LookAt(glm::vec3(0));
 
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f,
@@ -89,25 +89,6 @@ void Application3D::update(float deltaTime) {
 
 	const static float turnSpeed = 2.0f;
 
-	//if (input->isKeyDown(aie::INPUT_KEY_LEFT))
-	//	m_cameraTransform.Rotate(glm::angleAxis(deltaTime * turnSpeed, glm::vec3(1, 0, 0)));
-	//if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
-	//	m_cameraTransform.Rotate(glm::angleAxis(deltaTime * -turnSpeed, glm::vec3(1, 0, 0)));
-	//if (input->isKeyDown(aie::INPUT_KEY_UP))
-	//	m_cameraTransform.Rotate(glm::angleAxis(deltaTime * turnSpeed, glm::vec3(0, 0, 1)));
-	//if (input->isKeyDown(aie::INPUT_KEY_DOWN))
-	//	m_cameraTransform.Rotate(glm::angleAxis(deltaTime * -turnSpeed, glm::vec3(0, 0, 1)));
-
-	//if (input->isKeyDown(aie::INPUT_KEY_LEFT))
-	//	m_cameraTransform.Translate(deltaTime * turnSpeed * glm::vec3(1, 0, 0));
-	//if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
-	//	m_cameraTransform.Translate(deltaTime * -turnSpeed * glm::vec3(1, 0, 0));
-	//if (input->isKeyDown(aie::INPUT_KEY_UP))
-	//	m_cameraTransform.Translate(deltaTime * turnSpeed * glm::vec3(0, 0, 1));
-	//if (input->isKeyDown(aie::INPUT_KEY_DOWN))
-	//	m_cameraTransform.Translate(deltaTime * -turnSpeed * glm::vec3(0, 0, 1));
-
-
 	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
 		m_cameraTransform.RotateAround(glm::vec3(0), glm::vec3(0, 1, 0), deltaTime * -turnSpeed);
 	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
@@ -117,24 +98,14 @@ void Application3D::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
 		m_cameraTransform.RotateAround(glm::vec3(0), m_cameraTransform.Right(), deltaTime * turnSpeed);
 
-	const static float moveSpeed = 5.0f;
+	const static float moveSpeed = 12.0f;
 
 	if (input->isKeyDown(aie::INPUT_KEY_KP_ADD))
 		m_cameraTransform.MoveTowards(glm::vec3(0), deltaTime * moveSpeed);
 	if (input->isKeyDown(aie::INPUT_KEY_KP_SUBTRACT))
 		m_cameraTransform.MoveTowards(glm::vec3(0), deltaTime * -moveSpeed);
+
 	m_cameraTransform.LookAt(glm::vec3(0));
-
-	//if (input->isKeyDown(aie::INPUT_KEY_LEFT))
-	//	m_cameraPos.x += deltaTime * -turnSpeed;
-	//if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
-	//	m_cameraPos.x += deltaTime * turnSpeed;
-	//if (input->isKeyDown(aie::INPUT_KEY_UP))
-	//	m_cameraPos.z += deltaTime * -turnSpeed;
-	//if (input->isKeyDown(aie::INPUT_KEY_DOWN))
-	//	m_cameraPos.z += deltaTime * turnSpeed;
-
-	//m_viewMatrix = glm::lookAt(m_cameraPos, glm::vec3(0), glm::vec3(0, 1, 0));
 }
 
 void Application3D::draw() {

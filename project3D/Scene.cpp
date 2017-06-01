@@ -27,36 +27,63 @@ Scene::~Scene()
 
 void Physics::Scene::Start()
 {
-	Body* planeBody = new Body();
-	planeBody->SetMass(100000.0f);
-	planeBody->SetShape(new Plane());
-	planeBody->SetIsStatic(true);
-	AddBody(planeBody);
+	{ // Ball A
+		Body* ballBody = new Body();
+		ballBody->SetMass(50);
+		ballBody->SetShape(new Sphere(0.6f));
+		ballBody->SetPosition({ 1,2,3 });
+		AddBody(ballBody);
+	}
 
-	Body* ballBody = new Body();
-	ballBody->SetMass(50);
-	ballBody->SetShape(new Sphere(0.6f));
-	ballBody->SetPosition({ 1,2,3 });
-	AddBody(ballBody);
+	{ // Ball B
+		Body* ballBodyB = new Body();
+		ballBodyB->SetMass(50);
+		ballBodyB->SetShape(new Sphere(0.6f));
+		ballBodyB->SetPosition({ 1.1f,12,3 });
+		AddBody(ballBodyB);
+	}
 
-	Body* ballBodyB = new Body();
-	ballBodyB->SetMass(50);
-	ballBodyB->SetShape(new Sphere(0.6f));
-	ballBodyB->SetPosition({ 1.1f,5,3 });
-	AddBody(ballBodyB);
+	{ // Box Large
+		Body* boxBodyFloor = new Body();
+		boxBodyFloor->SetMass(1000000.0f);
+		boxBodyFloor->SetShape(new AABB(10));
+		boxBodyFloor->SetIsStatic(true);
+		boxBodyFloor->SetPosition({ 0,-6,0 });
+		AddBody(boxBodyFloor);
+	}
 
-	Body* boxBodyFloor = new Body();
-	boxBodyFloor->SetMass(100000.0f);
-	boxBodyFloor->SetShape(new AABB(10));
-	boxBodyFloor->SetIsStatic(true);
-	boxBodyFloor->SetPosition({ 0,-6,0 });
-	AddBody(boxBodyFloor);
 
-	Body* boxBodyB = new Body();
-	boxBodyB->SetMass(75);
-	boxBodyB->SetShape(new AABB(0.5f));
-	boxBodyB->SetPosition({ 0.5f,9,0.5f });
-	AddBody(boxBodyB);
+	{ // Floor Plane
+		Body* planeBody = new Body();
+		planeBody->SetMass(1000000.0f);
+		planeBody->SetShape(new Plane());
+		planeBody->SetIsStatic(true);
+		AddBody(planeBody);
+	}
+
+	{ // Directional Planes
+		//static const glm::vec3 dirs[4]{ {1,0,0},{ -1,0,0 },{ 0,0,1 },{ 0,0,-1 } };
+		//static const float dist = 10.0f;
+		//for (int i = 0; i < 4; i++)
+		//{
+		//	Body* planeBody = new Body();
+		//	planeBody->SetMass(1000000.0f);
+		//	Plane* planeShape = new Plane(dirs[i]);
+		//	planeBody->SetShape(planeShape);
+		//	planeBody->SetIsStatic(true);
+		//	planeBody->SetPosition(dirs[i] * dist);
+		//	AddBody(planeBody);
+		//}
+	}
+
+
+	{ // Box Small
+		Body* boxBodyB = new Body();
+		boxBodyB->SetMass(75);
+		boxBodyB->SetShape(new AABB(0.5f));
+		boxBodyB->SetPosition({ 0.5f,9,0.5f });
+		AddBody(boxBodyB);
+	}
 }
 
 void Scene::Update(float _deltaTime)
@@ -73,18 +100,22 @@ void Scene::Update(float _deltaTime)
 		{
 		case ShapeType::Plane:
 		{
-			// Move floor
-			glm::vec3 pos = obj->GetPosition();
-			pos.y = (-1.0f + (1.0f - -1.0f) * sinf(m_app->getTime()));
-			obj->SetPosition(pos);//  m_normal.x = (-0.15f + (0.25f - -0.15f) * sinf(m_app->getTime()));
+			//// Move floor
+			//if (obj->GetIsStatic()) {
+			//	glm::vec3 pos = obj->GetPosition();
+			//	pos.y = (-1.0f + (1.0f - -1.0f) * sinf(m_app->getTime()));
+			//	obj->SetPosition(pos);//  m_normal.x = (-0.15f + (0.25f - -0.15f) * sinf(m_app->getTime()));
+			//}
 		}
 		break;
 		case ShapeType::AABB:
 		{
-			glm::vec3 pos = obj->GetPosition();
-			if (pos.y < 0) {
-				pos.y = (-10.0f + (-1.0f - -10.0f) * sinf(m_app->getTime()));
-				obj->SetPosition(pos);//  m_normal.x = (-0.15f + (0.25f - -0.15f) * sinf(m_app->getTime()));
+			if (obj->GetIsStatic()) {
+				glm::vec3 pos = obj->GetPosition();
+				if (pos.y < 0) {
+					pos.y = (-10.0f + (-1.0f - -10.0f) * sinf(m_app->getTime()));
+					obj->SetPosition(pos);//  m_normal.x = (-0.15f + (0.25f - -0.15f) * sinf(m_app->getTime()));
+				}
 			}
 		}
 		break;

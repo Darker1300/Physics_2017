@@ -3,50 +3,31 @@
 #include <Gizmos.h>
 #include "Body.h"
 #include <glm\glm.hpp>
+#include <glm\gtc\quaternion.hpp>
 
 void Physics::Plane::DrawGizmo(const Body * const _body, const glm::vec4 & _colour) const
 {
-	static const glm::vec3 worldUp = { 0,1,0 };
-	static const glm::vec3 worldRight = { 1,0,0 };
-	static const glm::vec3 worldForward = { 0,0,1 };
-
-	//static const glm::vec3 planeSize = { 0.25f,1000.0f,1000.0f };
-
-	glm::vec3 right, forward, up;
-
-	float fDot = glm::dot(worldUp, GetNormal());
-	if (glm::abs(fDot) < 0.99f) {
-		right = GetNormal();
-		forward = glm::cross(right, worldUp);
-		up = glm::cross(forward, worldRight);
+	const glm::vec3 forward = -m_normal;
+	glm::vec3 up = { 0.0f, 1.0f, 0.0f };
+	if (glm::abs(glm::dot(forward, up)) >= 0.99f)
+	{
+		up = { 0.0f, 0.0f, 1.0f };
 	}
-	else {
-		right = GetNormal();
-		up = glm::cross(worldForward, right);
-		forward = glm::cross(right, up);
-	}
+	glm::vec3 right = glm::cross(forward, up);
+	up = glm::cross(right, forward);
 
-	glm::mat4 transform(1);
-	transform[0] = glm::vec4(right, 0);
-	transform[1] = glm::vec4(up, 0);
-	transform[2] = glm::vec4(forward, 0);
-	transform[3] = glm::vec4(_body->GetPosition() * GetNormal(), 1);
+	const glm::mat4 transform = { glm::vec4(right, 0.0f), glm::vec4(up, 0.0f), glm::vec4(forward, 0.0f), glm::vec4(_body->GetPosition(), 1.0f) };
 
-	//aie::Gizmos::addAABBFilled(_body->GetPosition(), planeSize, _colour, &transform);
+	const int totalSize = 5;
+	const int colCount = 8;
+	const int rowCount = 8;
+	const float colExtent = (float)totalSize / colCount;
+	const float rowExtent = (float)totalSize / rowCount;
 
-	static glm::vec4 white(1);
-	static glm::vec4 black(0, 0, 0, 1);
-	static const int planeLineCount = 21;
-	static const float planeSize = 10.0f;
-
-	for (int i = 0; i < planeLineCount; ++i) {
-		aie::Gizmos::addLine(
-			glm::vec3(transform * glm::vec4(0, -planeSize + i, planeSize, 1)),
-			glm::vec3(transform * glm::vec4(0, -planeSize + i, -planeSize, 1)),
-			i == 10 ? white : _colour);
-		aie::Gizmos::addLine(
-			glm::vec3(transform * glm::vec4(0, planeSize, -planeSize + i, 1)),
-			glm::vec3(transform * glm::vec4(0, -planeSize, -planeSize + i, 1)),
-			i == 10 ? white : _colour);
+	for (int x = -colCount; x <= colCount; x++) {
+		for (int y = -rowCount; y <= rowCount; y++) {
+			aie::Gizmos::addAABB({ x * (colExtent * 2.0f), 0.0f, y * (rowExtent * 2.0f) }, { colExtent, rowExtent, 0.01f }, _colour, &transform);
+		}
 	}
 }
+

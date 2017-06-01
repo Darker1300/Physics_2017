@@ -29,20 +29,23 @@ namespace Physics {
 
 			bool SphereSphere(const Body* _sphereA, const Body* _sphereB, CollisionInfo& _info);
 			bool AABBAABB(const Body* _aabbA, const Body* _aabbB, CollisionInfo& _info);
-
-			//TODO\\ bool PlanePlane(const Body* _planeA, const Body* _planeB, CollisionInfo& _info);
-
+			
 			// ----- Heterogeneous
-
 			bool SpherePlane(const Body* _sphere, const Body* _plane, CollisionInfo& _info);
+			bool SphereAABB(const Body* _sphere, const Body* _aabb, CollisionInfo& _info);
+			bool AABBPlane(const Body* _aabb, const Body* _plane, CollisionInfo& _info);
 
 			// ----- Heterogeneous Wrappers
 
 			bool PlaneSphere(const Body* _plane, const Body* _sphere, CollisionInfo& _info);
+			bool AABBSphere(const Body* _aabb, const Body* _sphere, CollisionInfo& _info);
+			bool PlaneAABB(const Body* _plane, const Body* _aabb, CollisionInfo& _info);
 
 			// ----- Helpers
 			namespace Helper {
-				bool AABBAABB_TestAxis(const glm::vec3& axis, float minA, float maxA, float minB, float maxB, glm::vec3& mtvAxis, float& mtvDistance);
+				glm::vec3 AABBPoint_ClosestPoint(const Body* _aabb, const glm::vec3& _point);
+				float AABBPoint_ClosestPoint_Axis(const float _min, const float _max, const float _point);
+				float AABBPoint_ClosestPoint_SquaredDist(const Body* _aabb, const glm::vec3& _point);
 			}
 		}
 	}
