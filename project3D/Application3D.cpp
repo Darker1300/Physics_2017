@@ -28,11 +28,9 @@ bool Application3D::startup() {
 	setBackgroundColour(0.25f, 0.25f, 0.25f);
 
 	// initialise gizmo primitive counts
-	Gizmos::create(10000, 10000, 10000, 10000);
+	Gizmos::create(1000000, 1000000, 1000000, 1000000);
 
 	//// create simple camera transforms
-	//m_cameraPos = glm::vec3(10);
-	//m_viewMatrix = glm::lookAt(m_cameraPos, glm::vec3(0), glm::vec3(0, 1, 0));
 	m_cameraTransform = Transform(glm::vec3(0, 5, 10));
 	m_cameraTransform.LookAt(glm::vec3(0));
 

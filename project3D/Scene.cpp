@@ -45,7 +45,7 @@ void Physics::Scene::Start()
 
 	{ // Box Large
 		Body* boxBodyFloor = new Body();
-		boxBodyFloor->SetMass(1000000.0f);
+		boxBodyFloor->SetMass(FLT_MAX);
 		boxBodyFloor->SetShape(new AABB(10));
 		boxBodyFloor->SetIsStatic(true);
 		boxBodyFloor->SetPosition({ 0,-6,0 });
@@ -55,25 +55,25 @@ void Physics::Scene::Start()
 
 	{ // Floor Plane
 		Body* planeBody = new Body();
-		planeBody->SetMass(1000000.0f);
-		planeBody->SetShape(new Plane());
+		planeBody->SetMass(FLT_MAX);
+		planeBody->SetShape(new Plane(glm::vec3(0, 1, 0)));
 		planeBody->SetIsStatic(true);
 		AddBody(planeBody);
 	}
 
 	{ // Directional Planes
-		//static const glm::vec3 dirs[4]{ {1,0,0},{ -1,0,0 },{ 0,0,1 },{ 0,0,-1 } };
-		//static const float dist = 10.0f;
-		//for (int i = 0; i < 4; i++)
-		//{
-		//	Body* planeBody = new Body();
-		//	planeBody->SetMass(1000000.0f);
-		//	Plane* planeShape = new Plane(dirs[i]);
-		//	planeBody->SetShape(planeShape);
-		//	planeBody->SetIsStatic(true);
-		//	planeBody->SetPosition(dirs[i] * dist);
-		//	AddBody(planeBody);
-		//}
+		static const glm::vec3 dirs[4]{ {1,0,0},{ -1,0,0 },{ 0,0,1 },{ 0,0,-1 } };
+		static const float dist = 10.0f;
+		for (int i = 0; i < 4; i++)
+		{
+			Body* planeBody = new Body();
+			planeBody->SetMass(FLT_MAX);
+			Plane* planeShape = new Plane(dirs[i]);
+			planeBody->SetShape(planeShape);
+			planeBody->SetIsStatic(true);
+			planeBody->SetPosition(-dirs[i] * dist);
+			AddBody(planeBody);
+		}
 	}
 
 
@@ -95,33 +95,33 @@ void Scene::Update(float _deltaTime)
 			obj->Update(_deltaTime);
 		}
 
-		// Move plane
-		switch (obj->GetShape()->GetType())
-		{
-		case ShapeType::Plane:
-		{
-			//// Move floor
-			//if (obj->GetIsStatic()) {
-			//	glm::vec3 pos = obj->GetPosition();
-			//	pos.y = (-1.0f + (1.0f - -1.0f) * sinf(m_app->getTime()));
-			//	obj->SetPosition(pos);//  m_normal.x = (-0.15f + (0.25f - -0.15f) * sinf(m_app->getTime()));
-			//}
-		}
-		break;
-		case ShapeType::AABB:
-		{
-			if (obj->GetIsStatic()) {
-				glm::vec3 pos = obj->GetPosition();
-				if (pos.y < 0) {
-					pos.y = (-10.0f + (-1.0f - -10.0f) * sinf(m_app->getTime()));
-					obj->SetPosition(pos);//  m_normal.x = (-0.15f + (0.25f - -0.15f) * sinf(m_app->getTime()));
-				}
-			}
-		}
-		break;
-		default:
-			break;
-		}
+		//// Move plane
+		//switch (obj->GetShape()->GetType())
+		//{
+		//case ShapeType::Plane:
+		//{
+		//	//// Move floor
+		//	//if (obj->GetIsStatic()) {
+		//	//	glm::vec3 pos = obj->GetPosition();
+		//	//	pos.y = (-1.0f + (1.0f - -1.0f) * sinf(m_app->getTime()));
+		//	//	obj->SetPosition(pos);//  m_normal.x = (-0.15f + (0.25f - -0.15f) * sinf(m_app->getTime()));
+		//	//}
+		//}
+		//break;
+		//case ShapeType::AABB:
+		//{
+		//	//if (obj->GetIsStatic()) {
+		//	//	glm::vec3 pos = obj->GetPosition();
+		//	//	if (pos.y < 0) {
+		//	//		pos.y = (-10.0f + (-1.0f - -10.0f) * sinf(m_app->getTime()));
+		//	//		obj->SetPosition(pos);//  m_normal.x = (-0.15f + (0.25f - -0.15f) * sinf(m_app->getTime()));
+		//	//	}
+		//	//}
+		//}
+		//break;
+		//default:
+		//	break;
+		//}
 	}
 
 	Collision::CollisionInfo collisionInfo;
@@ -175,7 +175,7 @@ void Physics::Scene::DrawGizmos() const
 			col = { 0, 0, 1, 0.25f };
 			break;
 		case Physics::ShapeType::AABB:
-			col = { 0, 1, 1, 0.25f };
+			col = { 0, 1, 1, 0.05f };
 			break;
 		default:
 			col = { 0, 0, 0, 0.25f };

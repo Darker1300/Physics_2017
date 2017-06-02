@@ -25,6 +25,7 @@ namespace Physics {
 		
 		void DrawGizmo(const Body* const _body, const glm::vec4& _colour = glm::vec4(0, 1, 0, 0.1f)) const;
 
+		float GetDistanceToOrigin(const glm::vec3& _position) const;
 	private:
 		glm::vec3 m_normal;
 	};
