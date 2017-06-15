@@ -31,7 +31,7 @@ bool Application3D::startup() {
 	Gizmos::create(1000000, 1000000, 1000000, 1000000);
 
 	//// create simple camera transforms
-	m_cameraTransform = Transform(glm::vec3(0, 5, 10));
+	m_cameraTransform = Transform(glm::vec3(0, 5, 7));
 	m_cameraTransform.LookAt(glm::vec3(0));
 
 	m_projectionMatrix = glm::perspective(glm::pi<float>() * 0.25f,
@@ -54,31 +54,14 @@ void Application3D::fixedUpdate(float deltaTime)
 {
 	m_scene->Update(deltaTime);
 }
-
+#include <iostream>
+#include "Vector3.h"
 void Application3D::update(float deltaTime) {
 
 	// query time since application started
 	float time = getTime();
-
-	// rotate camera
-	//m_cameraMatrix = glm::lookAt(vec3(glm::sin(time) * 30, 10, glm::cos(time) * 30),
-	//	vec3(0), vec3(0, 1, 0));
-
 	// wipe the gizmos clean for this frame
 	Gizmos::clear();
-
-	//// demonstrate a few shapes
-	//Gizmos::addAABBFilled(vec3(0), vec3(1), vec4(0, 0.5f, 1, 0.25f));
-	//Gizmos::addSphere(vec3(5, 0, 5), 1, 8, 8, vec4(1, 0, 0, 0.5f));
-	//Gizmos::addRing(vec3(5, 0, -5), 1, 1.5f, 8, vec4(0, 1, 0, 1));
-	//Gizmos::addDisk(vec3(-5, 0, 5), 1, 16, vec4(1, 1, 0, 1));
-	//Gizmos::addArc(vec3(-5, 0, -5), 0, 2, 1, 8, vec4(1, 0, 1, 1));
-
-	//mat4 t = glm::rotate(time, glm::normalize(vec3(1, 1, 1)));
-	//t[3] = vec4(-2, 0, 0, 1);
-	//Gizmos::addCylinderFilled(vec3(0), 0.5f, 1, 5, vec4(0, 1, 1, 1), &t);
-
-
 	// quit if we press escape
 	aie::Input* input = aie::Input::getInstance();
 
@@ -86,7 +69,9 @@ void Application3D::update(float deltaTime) {
 		quit();
 
 	const static float turnSpeed = 2.0f;
+	const static float moveSpeed = 12.0f;
 
+	// Camera Rotation
 	if (input->isKeyDown(aie::INPUT_KEY_LEFT))
 		m_cameraTransform.RotateAround(glm::vec3(0), glm::vec3(0, 1, 0), deltaTime * -turnSpeed);
 	if (input->isKeyDown(aie::INPUT_KEY_RIGHT))
@@ -96,13 +81,13 @@ void Application3D::update(float deltaTime) {
 	if (input->isKeyDown(aie::INPUT_KEY_DOWN))
 		m_cameraTransform.RotateAround(glm::vec3(0), m_cameraTransform.Right(), deltaTime * turnSpeed);
 
-	const static float moveSpeed = 12.0f;
-
+	// Camera Distance Translation
 	if (input->isKeyDown(aie::INPUT_KEY_KP_ADD))
 		m_cameraTransform.MoveTowards(glm::vec3(0), deltaTime * moveSpeed);
 	if (input->isKeyDown(aie::INPUT_KEY_KP_SUBTRACT))
 		m_cameraTransform.MoveTowards(glm::vec3(0), deltaTime * -moveSpeed);
 
+	// Camera LookAt World Origin
 	m_cameraTransform.LookAt(glm::vec3(0));
 }
 
@@ -116,8 +101,8 @@ void Application3D::draw() {
 		getWindowWidth() / (float)getWindowHeight(),
 		0.1f, 1000.f);
 
+	// Draw Physics Gizmos
 	m_scene->DrawGizmos();
 
 	Gizmos::draw(m_projectionMatrix * m_cameraTransform.InverseMatrix());
-	//Gizmos::draw(m_projectionMatrix * m_viewMatrix);
 }

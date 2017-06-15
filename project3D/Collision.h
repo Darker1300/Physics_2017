@@ -29,7 +29,7 @@ namespace Physics {
 
 			bool SphereSphere(const Body* _sphereA, const Body* _sphereB, CollisionInfo& _info);
 			bool AABBAABB(const Body* _aabbA, const Body* _aabbB, CollisionInfo& _info);
-			
+
 			// ----- Heterogeneous
 			bool SpherePlane(const Body* _sphere, const Body* _plane, CollisionInfo& _info);
 			bool SphereAABB(const Body* _sphere, const Body* _aabb, CollisionInfo& _info);
@@ -44,8 +44,6 @@ namespace Physics {
 			// ----- Helpers
 			namespace Helper {
 				glm::vec3 AABBPoint_ClosestPoint(const Body* _aabb, const glm::vec3& _point);
-				float AABBPoint_ClosestPoint_Axis(const float _min, const float _max, const float _point);
-				float AABBPoint_ClosestPoint_SquaredDist(const Body* _aabb, const glm::vec3& _point);
 			}
 		}
 	}

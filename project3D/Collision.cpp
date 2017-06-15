@@ -65,34 +65,29 @@ namespace Physics {
 			glm::vec3 obj2NewVelocity = _obj2->GetVelocity() + ((j / _obj2->GetMass()) * _info.normal);
 
 			if (!_obj1->GetIsStatic())
-			_obj1->SetVelocity(obj1NewVelocity);
+				_obj1->SetVelocity(obj1NewVelocity);
 			if (!_obj2->GetIsStatic())
-			_obj2->SetVelocity(obj2NewVelocity);
+				_obj2->SetVelocity(obj2NewVelocity);
 		}
 
 		namespace Test {
 
 			bool Test::SphereSphere(const Body * _sphereA, const Body * _sphereB, CollisionInfo & _info)
 			{
-				// Radius
-				const float rCombined =
+				const float minDistance =
 					((const Sphere*)_sphereA->GetShape())->GetRadius()
 					+ ((const Sphere*)_sphereB->GetShape())->GetRadius();
-				const float rSquared = rCombined * rCombined;
 
-				// Distance
-				const glm::vec3 delta = _sphereB->GetPosition() - _sphereA->GetPosition();
-				const float distSquared = glm::dot(delta, delta);
-
-				// Test
-				if (distSquared < rSquared) {
-					// Collided
+				glm::vec3 offset = _sphereB->GetPosition() - _sphereA->GetPosition();
+				float length = glm::length(offset);
+				if (length < minDistance)
+				{
 					_info.collided = true;
-					_info.normal = glm::normalize(delta);
-					_info.penetration = glm::sqrt(rSquared - distSquared);
+					_info.normal = glm::normalize(offset);
+					_info.penetration = minDistance - length;
 				}
-				else {
-					// No Collision
+				else
+				{
 					_info.collided = false;
 				}
 
@@ -101,35 +96,53 @@ namespace Physics {
 
 			bool Test::AABBAABB(const Body * _aabbA, const Body * _aabbB, CollisionInfo & _info)
 			{
-				glm::vec3 centerA = _aabbA->GetPosition();
-				glm::vec3 centerB = _aabbB->GetPosition();
-				glm::vec3 extentsA = ((const AABB*)_aabbA->GetShape())->GetExtents();
-				glm::vec3 extentsB = ((const AABB*)_aabbB->GetShape())->GetExtents();
+				const AABB* pAabbA = (const AABB*)_aabbA->GetShape();
+				const AABB* pAabbB = (const AABB*)_aabbB->GetShape();
 
-				glm::vec3 overlap = glm::vec3();
-				for (int axis = 0; axis < 3; axis++) {
-					// d = | centreB - centreA | -(halfExtentsA + halfExtentsB)
-					overlap[axis] = (glm::abs(centerB[axis] - centerA[axis])) - (extentsA[axis] + extentsB[axis]);
-					if (overlap[axis] >= 0.0f) {
-						_info.collided = false;
-						return _info.collided;
-					}
+				glm::vec3 minA = _aabbA->GetPosition() - pAabbA->GetExtents();
+				glm::vec3 minB = _aabbB->GetPosition() - pAabbB->GetExtents();
+
+				glm::vec3 maxA = _aabbA->GetPosition() + pAabbA->GetExtents();
+				glm::vec3 maxB = _aabbB->GetPosition() + pAabbB->GetExtents();
+
+				if (maxA.x < minB.x || minA.x > maxB.x ||
+					maxA.y < minB.y || minA.y > maxB.y ||
+					maxA.z < minB.z || minA.z > maxB.z)
+				{
+					_info.collided = false;
+					return false;
 				}
 
-				int closestAxis = 0;
-				for (int axis = 1; axis < 3; axis++) {
-					if (overlap[axis] > overlap[closestAxis]) closestAxis = axis;
+				glm::vec3 offsetA = maxA - minB;
+				glm::vec3 offsetB = minA - maxB;
+
+				glm::vec3 smallestOffset = glm::vec3(0);
+				smallestOffset.x =
+					(fabs(offsetA.x) < fabs(offsetB.x)) ? offsetA.x : offsetB.x;
+				smallestOffset.y =
+					(fabs(offsetA.y) < fabs(offsetB.y)) ? offsetA.y : offsetB.y;
+				smallestOffset.z =
+					(fabs(offsetA.z) < fabs(offsetB.z)) ? offsetA.z : offsetB.z;
+
+				glm::vec3 normal = glm::vec3(1, 0, 0);
+				float intercept = smallestOffset.x;
+				if (fabs(smallestOffset.y) < fabs(intercept))
+				{
+					normal = glm::vec3(0, 1, 0);
+					intercept = smallestOffset.y;
 				}
 
-				for (int axis = 0; axis < 3; axis++) {
-					if (axis == closestAxis) continue;
-					else overlap[axis] = 0.0f;
+				if (fabs(smallestOffset.z) < fabs(intercept))
+				{
+					normal = glm::vec3(0, 0, 1);
+					intercept = smallestOffset.z;
 				}
 
 				_info.collided = true;
-				_info.normal = glm::normalize(overlap);
-				_info.penetration = overlap[closestAxis];
-				return _info.collided;
+				_info.normal = normal;
+				_info.penetration = intercept;
+
+				return true;
 
 			}
 
@@ -138,16 +151,20 @@ namespace Physics {
 				const Sphere* pSphere = (const Sphere*)_sphere->GetShape();
 				const Plane* pPlane = (const Plane*)_plane->GetShape();
 
-				// Distance from Plane
-				float distance = glm::dot(pPlane->GetNormal(), (_sphere->GetPosition() - _plane->GetPosition()));
-
-				if (distance < pSphere->GetRadius()) {
-					// Collided
+				float distanceFromPlane =
+					(glm::dot(_sphere->GetPosition(), pPlane->GetNormal())) -
+					pPlane->GetDistanceToOrigin(_plane->GetPosition());
+				if (distanceFromPlane < pSphere->GetRadius())
+				{
+					// Collision
 					_info.normal = -pPlane->GetNormal();
-					_info.penetration = pSphere->GetRadius() - distance;
+					_info.penetration =
+						pSphere->GetRadius() - distanceFromPlane;
+
 					_info.collided = true;
 				}
-				else {
+				else
+				{
 					// No Collision
 					_info.collided = false;
 				}
@@ -155,45 +172,19 @@ namespace Physics {
 				return _info.collided;
 			}
 
-			bool SphereAABB(const Body * _sphere, const Body * _aabb, CollisionInfo & _info)
+			bool Test::SphereAABB(const Body * _sphere, const Body * _aabb, CollisionInfo & _info)
 			{
-				//DO OPPERSITE
-
-				const Sphere* pSphere = (const Sphere*)_sphere->GetShape();
-				const AABB* pAabb = (const AABB*)_aabb->GetShape();
-
-				float squaredDst = Helper::AABBPoint_ClosestPoint_SquaredDist(_aabb, _sphere->GetPosition());
-				float radSqrd = (pSphere->GetRadius() * pSphere->GetRadius());
-				if (squaredDst > radSqrd) {
-					_info.collided = false;
-					return _info.collided;
-				}
-
-				_info.normal = glm::normalize(_aabb->GetPosition() - _sphere->GetPosition());
-				_info.penetration = glm::sqrt(squaredDst);
-				_info.collided = true;
-				//_info.collided = false;
+				AABBSphere(_aabb, _sphere, _info);
+				if (_info.collided)
+					_info.normal = -_info.normal;
 				return _info.collided;
 			}
 
-			bool AABBPlane(const Body * _aabb, const Body * _plane, CollisionInfo & _info)
+			bool Test::AABBPlane(const Body * _aabb, const Body * _plane, CollisionInfo & _info)
 			{
-				const AABB* aabb = (const AABB*)_aabb->GetShape();
-				const Plane* plane = (const Plane*)_plane->GetShape();
-				float planeDistance = plane->GetDistanceToOrigin(_plane->GetPosition());
-
-				const float r = glm::dot(aabb->GetExtents(), glm::abs(plane->GetNormal()));
-				const float s = glm::dot(plane->GetNormal(), _aabb->GetPosition()) - planeDistance;
-
-				if (glm::abs(s) < r)
-				{
-					_info.penetration = glm::abs(s - r);
-					_info.normal = -plane->GetNormal();
-					_info.collided = true;
-					return _info.collided;
-				}
-
-				_info.collided = false;
+				PlaneAABB(_plane, _aabb, _info);
+				if (_info.collided)
+					_info.normal = -_info.normal;
 				return _info.collided;
 			}
 
@@ -205,73 +196,86 @@ namespace Physics {
 				return _info.collided;
 			}
 
-			bool AABBSphere(const Body * _aabb, const Body * _sphere, CollisionInfo & _info)
+			bool Test::AABBSphere(const Body * _aabb, const Body * _sphere, CollisionInfo & _info)
 			{
-				SphereAABB(_sphere, _aabb, _info);
-				if (_info.collided)
-					_info.normal = -_info.normal;
+				const AABB* pAabb = (const AABB*)_aabb->GetShape();
+				const Sphere* pSphere = (const Sphere*)_sphere->GetShape();
+
+				glm::vec3 offset = _sphere->GetPosition() - _aabb->GetPosition();
+				glm::vec3 extents = pAabb->GetExtents();
+
+				glm::vec3 edge = glm::vec3(0);
+				edge.x =
+					glm::clamp(glm::dot(offset, glm::vec3(1, 0, 0)), -extents.x, extents.x);
+				edge.y =
+					glm::clamp(glm::dot(offset, glm::vec3(0, 1, 0)), -extents.y, extents.y);
+				edge.z =
+					glm::clamp(glm::dot(offset, glm::vec3(0, 0, 1)), -extents.z, extents.z);
+
+				glm::vec3 aabbClosestPoint = _aabb->GetPosition() + edge;
+
+				offset = _sphere->GetPosition() - aabbClosestPoint;
+				float length = glm::length(offset);
+				if (length < pSphere->GetRadius() && length > 0)
+				{
+					_info.collided = true;
+					_info.normal = glm::normalize(offset);
+					_info.penetration = pSphere->GetRadius() - length;
+				}
+				else
+				{
+					_info.collided = false;
+				}
 				return _info.collided;
 			}
 
-			bool PlaneAABB(const Body * _plane, const Body * _aabb, CollisionInfo & _info)
+			bool Test::PlaneAABB(const Body * _plane, const Body * _aabb, CollisionInfo & _info)
 			{
-				AABBPlane(_aabb, _plane, _info);
-				if (_info.collided)
-					_info.normal = -_info.normal;
+				const AABB* pAABB = (const AABB*)_aabb->GetShape();
+				const Plane* pPlane = (const Plane*)_plane->GetShape();
+
+				glm::vec3 aabbMin = _aabb->GetPosition() - pAABB->GetExtents();
+				glm::vec3 aabbMax = _aabb->GetPosition() + pAABB->GetExtents();
+
+				float distanceMin = glm::dot(pPlane->GetNormal(), aabbMin) -
+					pPlane->GetDistanceToOrigin(_plane->GetPosition());
+				float distanceMax = glm::dot(pPlane->GetNormal(), aabbMax) -
+					pPlane->GetDistanceToOrigin(_plane->GetPosition());
+
+				float smallestDistance =
+					(distanceMin < distanceMax) ? distanceMin : distanceMax;
+
+				if (smallestDistance < 0)
+				{
+					_info.penetration = -smallestDistance;
+					_info.normal = pPlane->GetNormal();
+					_info.collided = true;
+				}
+				else
+				{
+					_info.collided = false;
+				}
+
 				return _info.collided;
 			}
 
 			namespace Helper {
 
-				glm::vec3 Helper::AABBPoint_ClosestPoint(const Body * _aabbA, const glm::vec3 & _point)
-				{
-					glm::vec3 center = _aabbA->GetPosition();
-					AABB* aabb = (AABB*)(_aabbA->GetShape());
-					glm::vec3 min = center - aabb->GetExtents();
-					glm::vec3 max = center + aabb->GetExtents();
-					glm::vec3 closest = glm::vec3(
-						AABBPoint_ClosestPoint_Axis(min.x, max.x, _point.x),
-						AABBPoint_ClosestPoint_Axis(min.y, max.y, _point.y),
-						AABBPoint_ClosestPoint_Axis(min.z, max.z, _point.z)
-					);
-					return closest;
-				}
-
-				float AABBPoint_ClosestPoint_Axis(const float _min, const float _max, const float _point)
-				{
-					float result = 0;
-					if (_point > _max)
-						result = _max;
-					else if (_point < _min)
-						result = _min;
-					else result = _point;
-					return result;
-				}
-				float AABBPoint_ClosestPoint_SquaredDist(const Body * _aabb, const glm::vec3 & _point)
+				glm::vec3 Helper::AABBPoint_ClosestPoint(const Body * _aabb, const glm::vec3 & _point)
 				{
 					const AABB* pAabb = (const AABB*)_aabb->GetShape();
-					glm::vec3 center = _aabb->GetPosition();
-					glm::vec3 bmin = center - pAabb->GetExtents();
-					glm::vec3 bmax = center - pAabb->GetExtents();
+					glm::vec3 extents = pAabb->GetExtents();
+					glm::vec3 offset = _point - _aabb->GetPosition();
 
-					glm::vec3 out = glm::vec3();
+					auto edge = glm::vec3(0);
+					edge.x =
+						glm::clamp(glm::dot(offset, glm::vec3(1, 0, 0)), -extents.x, extents.x);
+					edge.y =
+						glm::clamp(glm::dot(offset, glm::vec3(0, 1, 0)), -extents.y, extents.y);
+					edge.z =
+						glm::clamp(glm::dot(offset, glm::vec3(0, 0, 1)), -extents.z, extents.z);
 
-					for (int axis = 0; axis < 3; axis++) {
-
-						if (_point[axis] < bmin[axis])
-						{
-							float val = (bmin[axis] - _point[axis]);
-							out[axis] += val * val;
-						}
-
-						if (_point[axis] > bmax[axis])
-						{
-							float val = (_point[axis] - bmax[axis]);
-							out[axis] += val * val;
-						}
-					}
-
-					return out.x + out.y + out.z;
+					return _aabb->GetPosition() + edge;
 				}
 			}
 		}

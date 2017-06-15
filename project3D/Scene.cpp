@@ -39,8 +39,18 @@ void Physics::Scene::Start()
 		Body* ballBodyB = new Body();
 		ballBodyB->SetMass(50);
 		ballBodyB->SetShape(new Sphere(0.6f));
-		ballBodyB->SetPosition({ 1.1f,12,3 });
+		//ballBodyB->SetPosition({ 1.1f,12,3 });
+		ballBodyB->SetPosition({ 1,5,3 });
 		AddBody(ballBodyB);
+	}
+
+	{ // Box Small
+		Body* boxBodyB = new Body();
+		boxBodyB->SetMass(75);
+		boxBodyB->SetShape(new AABB(0.5f));
+		boxBodyB->SetPosition({ 3.5f,9,0.5f });
+		boxBodyB->SetPosition({ 1.3,3,3 });
+		AddBody(boxBodyB);
 	}
 
 	{ // Box Large
@@ -48,21 +58,20 @@ void Physics::Scene::Start()
 		boxBodyFloor->SetMass(FLT_MAX);
 		boxBodyFloor->SetShape(new AABB(10));
 		boxBodyFloor->SetIsStatic(true);
-		boxBodyFloor->SetPosition({ 0,-6,0 });
+		boxBodyFloor->SetPosition({ 0,-4,0 });
 		AddBody(boxBodyFloor);
 	}
-
 
 	{ // Floor Plane
 		Body* planeBody = new Body();
 		planeBody->SetMass(FLT_MAX);
-		planeBody->SetShape(new Plane(glm::vec3(0, 1, 0)));
+		planeBody->SetShape(new Plane(glm::normalize(glm::vec3(0, 1, 0.4f))));
 		planeBody->SetIsStatic(true);
 		AddBody(planeBody);
 	}
 
 	{ // Directional Planes
-		static const glm::vec3 dirs[4]{ {1,0,0},{ -1,0,0 },{ 0,0,1 },{ 0,0,-1 } };
+		static const glm::vec3 dirs[4]{ {1, 0, 0}, { -1,0,0 }, { 0,0,1 }, { 0,0,-1 } };
 		static const float dist = 10.0f;
 		for (int i = 0; i < 4; i++)
 		{
@@ -74,15 +83,6 @@ void Physics::Scene::Start()
 			planeBody->SetPosition(-dirs[i] * dist);
 			AddBody(planeBody);
 		}
-	}
-
-
-	{ // Box Small
-		Body* boxBodyB = new Body();
-		boxBodyB->SetMass(75);
-		boxBodyB->SetShape(new AABB(0.5f));
-		boxBodyB->SetPosition({ 0.5f,9,0.5f });
-		AddBody(boxBodyB);
 	}
 }
 
@@ -144,8 +144,6 @@ void Scene::Update(float _deltaTime)
 
 void Physics::Scene::DrawGizmos() const
 {
-
-	// add a transform so that we can see the axis
 	aie::Gizmos::addTransform(glm::mat4(1));
 
 	// draw a simple grid
@@ -160,22 +158,23 @@ void Physics::Scene::DrawGizmos() const
 			i == 10 ? white : black);
 	}
 
+
 	for each (Physics::Body* obj in m_objects) {
 		static glm::vec4 col = glm::vec4(0, 0, 0, 0.25f);
 
 		switch (obj->GetShape()->GetType())
 		{
 		case Physics::ShapeType::Point:
-			col = { 0, 1, 0, 0.25f };
+			col = { 0, 1, 0, 1 };
 			break;
 		case Physics::ShapeType::Plane:
-			col = { 1, 0, 0, 0.25f };
+			col = { 1, 0, 0, 0.1f };
 			break;
 		case Physics::ShapeType::Sphere:
-			col = { 0, 0, 1, 0.25f };
+			col = { 0, 0, 1, 1 };
 			break;
 		case Physics::ShapeType::AABB:
-			col = { 0, 1, 1, 0.05f };
+			col = { 1, 204 / 255.0f,0 , 0.9f };
 			break;
 		default:
 			col = { 0, 0, 0, 0.25f };

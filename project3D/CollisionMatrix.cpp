@@ -39,7 +39,7 @@ const CollisionFunction Collision::CollisionMatrix[] = {
 	/*Sphere	&& MeshConvex	*/	nullptr,
 
 	/*AABB		&& Point		*/	nullptr,
-	/*AABB		&& Plane		*/	nullptr,//AABBPlane,
+	/*AABB		&& Plane		*/	AABBPlane,
 	/*AABB		&& Sphere		*/	AABBSphere,
 	/*AABB		&& AABB			*/	AABBAABB,
 	/*AABB		&& Box			*/	nullptr,

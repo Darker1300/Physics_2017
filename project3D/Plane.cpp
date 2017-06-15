@@ -30,7 +30,7 @@ void Physics::Plane::DrawGizmo(const Body * const _body, const glm::vec4 & _colo
 			glm::vec4 offset = glm::vec4(x * (colExtent * 2.0f), y * (rowExtent * 2.0f), 0.0f, 1);
 			glm::vec3 p = glm::vec3(transform * offset);
 			glm::vec4 col = glm::vec4(glm::normalize(glm::abs(glm::vec3(offset))), 0.85f);
-			aie::Gizmos::addAABBFilled(p, { colExtent, rowExtent, 0.01f }, {0,0,0,0.95f}, &transform);
+			aie::Gizmos::addAABBFilled(p, { colExtent, rowExtent, 0.01f }, { 0,0,0,0.95f }, &transform);
 		}
 	}
 
@@ -39,6 +39,6 @@ void Physics::Plane::DrawGizmo(const Body * const _body, const glm::vec4 & _colo
 
 float Physics::Plane::GetDistanceToOrigin(const glm::vec3 & _position) const
 {
-	return glm::dot(m_normal, (-_position));;
+	return glm::dot(m_normal, (_position));
 }
 
