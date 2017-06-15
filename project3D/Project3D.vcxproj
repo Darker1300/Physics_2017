@@ -93,7 +93,6 @@
     <ClCompile Include="Application3D.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="CollisionMatrix.cpp" />
-    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Body.cpp" />
     <ClCompile Include="Plane.cpp" />
@@ -110,7 +109,6 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="DEBUG_NEW_LEAK_DETECT.h" />
     <ClInclude Include="DEBUG_WINDOWS_ERR_MSG.h" />
-    <ClInclude Include="Engine.h" />
     <ClInclude Include="Body.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Point.h" />

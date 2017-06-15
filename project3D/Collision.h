@@ -48,5 +48,3 @@ namespace Physics {
 		}
 	}
 }
-// txdu7rny
-// 67SzLJv6

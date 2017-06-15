@@ -48,7 +48,7 @@ bool Body::GetIsStatic() const
 	return m_isStatic;
 }
 
-float Physics::Body::GetRestitution() const
+float Body::GetRestitution() const
 {
 	return m_restitution;
 }
@@ -73,7 +73,7 @@ void Body::SetIsStatic(const bool _isStatic)
 	m_isStatic = _isStatic;
 }
 
-void Physics::Body::SetRestitution(const float _restitution)
+void Body::SetRestitution(const float _restitution)
 {
 	m_restitution = _restitution;
 }
@@ -117,7 +117,7 @@ void Body::RemoveShape()
 	}
 }
 
-void Physics::Body::DrawGizmo(const glm::vec4& _colour) const
+void Body::DrawGizmo(const glm::vec4& _colour) const
 {
 	if (m_shape != nullptr)
 		m_shape->DrawGizmo(this, _colour);

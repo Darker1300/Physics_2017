@@ -39,7 +39,6 @@ void Physics::Scene::Start()
 		Body* ballBodyB = new Body();
 		ballBodyB->SetMass(50);
 		ballBodyB->SetShape(new Sphere(0.6f));
-		//ballBodyB->SetPosition({ 1.1f,12,3 });
 		ballBodyB->SetPosition({ 1,5,3 });
 		AddBody(ballBodyB);
 	}
@@ -94,34 +93,6 @@ void Scene::Update(float _deltaTime)
 			obj->AddAcceleration(m_gravity);
 			obj->Update(_deltaTime);
 		}
-
-		//// Move plane
-		//switch (obj->GetShape()->GetType())
-		//{
-		//case ShapeType::Plane:
-		//{
-		//	//// Move floor
-		//	//if (obj->GetIsStatic()) {
-		//	//	glm::vec3 pos = obj->GetPosition();
-		//	//	pos.y = (-1.0f + (1.0f - -1.0f) * sinf(m_app->getTime()));
-		//	//	obj->SetPosition(pos);//  m_normal.x = (-0.15f + (0.25f - -0.15f) * sinf(m_app->getTime()));
-		//	//}
-		//}
-		//break;
-		//case ShapeType::AABB:
-		//{
-		//	//if (obj->GetIsStatic()) {
-		//	//	glm::vec3 pos = obj->GetPosition();
-		//	//	if (pos.y < 0) {
-		//	//		pos.y = (-10.0f + (-1.0f - -10.0f) * sinf(m_app->getTime()));
-		//	//		obj->SetPosition(pos);//  m_normal.x = (-0.15f + (0.25f - -0.15f) * sinf(m_app->getTime()));
-		//	//	}
-		//	//}
-		//}
-		//break;
-		//default:
-		//	break;
-		//}
 	}
 
 	Collision::CollisionInfo collisionInfo;
@@ -133,8 +104,7 @@ void Scene::Update(float _deltaTime)
 			objIter2++)
 		{
 			// Test Collision
-			bool collided = Collision::TestCollision(*objIter1, *objIter2, collisionInfo);
-			if (collided) {
+			if (Collision::TestCollision(*objIter1, *objIter2, collisionInfo)) {
 				// Handle Collision
 				Collision::ResolveCollision(*objIter1, *objIter2, collisionInfo);
 			}
@@ -144,9 +114,10 @@ void Scene::Update(float _deltaTime)
 
 void Physics::Scene::DrawGizmos() const
 {
+	// draw a transform at world origin
 	aie::Gizmos::addTransform(glm::mat4(1));
 
-	// draw a simple grid
+	// draw a simple grid at world origin
 	glm::vec4 white(0.4f);
 	glm::vec4 black(0, 0, 0, 1);
 	for (int i = 0; i < 21; ++i) {
@@ -158,7 +129,7 @@ void Physics::Scene::DrawGizmos() const
 			i == 10 ? white : black);
 	}
 
-
+	// Select color for gizmo
 	for each (Physics::Body* obj in m_objects) {
 		static glm::vec4 col = glm::vec4(0, 0, 0, 0.25f);
 
@@ -180,7 +151,7 @@ void Physics::Scene::DrawGizmos() const
 			col = { 0, 0, 0, 0.25f };
 			break;
 		}
-
+		// Draw Gizmo
 		obj->DrawGizmo(col);
 	}
 }

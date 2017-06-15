@@ -36,9 +36,6 @@
     <ClCompile Include="Application3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Engine.cpp">
-      <Filter>Source Files\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files\Physics</Filter>
     </ClCompile>
@@ -82,9 +79,6 @@
     </ClInclude>
     <ClInclude Include="DEBUG_WINDOWS_ERR_MSG.h">
       <Filter>Header Files\DEBUG</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>Header Files\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>Header Files\Physics</Filter>

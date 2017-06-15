@@ -13,12 +13,15 @@ namespace Physics {
 
 		bool Collision::TestCollision(const Body * _obj1, const Body * _obj2, CollisionInfo & _info)
 		{
+			// Select Test Algorithm based on ShapeType
 			auto index = (
 				(int)(_obj1->GetShape()->GetType()) * (int)(ShapeType::Size)
 				+ (int)(_obj2->GetShape()->GetType()));
 
-			if (CollisionMatrix[index] != nullptr)
+			if (CollisionMatrix[index] != nullptr) {
+				// If Test Function exists, use it
 				return CollisionMatrix[index](_obj1, _obj2, _info);
+			}
 			else  _info.collided = false;
 
 			return _info.collided;
