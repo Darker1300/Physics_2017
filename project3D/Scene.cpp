@@ -142,7 +142,7 @@ void Physics::Scene::DrawGizmos() const
 			col = { 1, 0, 0, 0.1f };
 			break;
 		case Physics::ShapeType::Sphere:
-			col = { 0, 0, 1, 1 };
+			col = { 0, 0, 1, 0.9f };
 			break;
 		case Physics::ShapeType::AABB:
 			col = { 1, 204 / 255.0f,0 , 0.9f };

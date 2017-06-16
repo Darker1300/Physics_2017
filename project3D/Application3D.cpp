@@ -10,6 +10,10 @@
 
 #include "Scene.h"
 
+#include "Body.h"
+#include "Sphere.h";
+#include "AABB.h"
+
 using glm::vec3;
 using glm::vec4;
 using glm::mat4;
@@ -39,7 +43,7 @@ bool Application3D::startup() {
 		0.1f, 1000.f);
 
 	m_scene = new Physics::Scene((Application3D*)this);
-
+	m_spawnCooldown = 0.0f;
 	return true;
 }
 
@@ -89,6 +93,41 @@ void Application3D::update(float deltaTime) {
 
 	// Camera LookAt World Origin
 	m_cameraTransform.LookAt(glm::vec3(0));
+
+
+	// Spawning controls
+	if (m_spawnCooldown != 0.0f && m_spawnCooldown > 0.0f) {
+		if (m_spawnCooldown - deltaTime <= 0.0f)
+			m_spawnCooldown = 0.0f;
+		else m_spawnCooldown -= deltaTime;
+	}
+	if (m_spawnCooldown == 0.0f) {
+		bool fired = false;
+		bool isBox = false;
+
+		if (input->isKeyDown(aie::INPUT_KEY_LEFT_CONTROL) || input->isKeyDown(aie::INPUT_KEY_RIGHT_CONTROL)) {
+			fired = true;
+			isBox = false;
+		}
+		if (input->isKeyDown(aie::INPUT_KEY_LEFT_ALT) || input->isKeyDown(aie::INPUT_KEY_RIGHT_ALT)) {
+			fired = true;
+			isBox = true;
+		}
+		if (fired)
+		{
+			m_spawnCooldown = 0.5f;
+			Physics::Body* body = new Physics::Body(15.0f);
+			body->SetPosition(m_cameraTransform.Position() + -m_cameraTransform.Forward());
+			body->AddVelocity(-m_cameraTransform.Forward() * 20);
+			Physics::Shape* shape;
+			if (isBox)
+				shape = new Physics::AABB(0.66f);
+			else
+				shape = new Physics::Sphere(0.33f);
+			body->SetShape(shape);
+			m_scene->AddBody(body);
+		}
+	}
 }
 
 void Application3D::draw() {

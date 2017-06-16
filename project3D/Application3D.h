@@ -24,8 +24,7 @@ public:
 
 protected:
 	Transform	m_cameraTransform;
-	//glm::vec3	m_cameraPos;
-	//glm::mat4	m_viewMatrix;
 	glm::mat4	m_projectionMatrix;
 	Physics::Scene* m_scene;
+	float		m_spawnCooldown;
 };
