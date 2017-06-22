@@ -1,0 +1,7 @@
+Controls:
+
+Arrow Keys		Rotate around world origin
+Keypad +		Zoom In
+Keypad -		Zoom Out
+ALT				Spawn AABB
+CTRL			Spawn Sphere
