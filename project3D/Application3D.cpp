@@ -42,7 +42,7 @@ bool Application3D::startup() {
 		getWindowWidth() / (float)getWindowHeight(),
 		0.1f, 1000.f);
 
-	m_scene = new Physics::Scene((Application3D*)this);
+	m_scene = new Physics::Scene();
 	m_spawnCooldown = 0.0f;
 	return true;
 }

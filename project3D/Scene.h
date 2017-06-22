@@ -3,8 +3,6 @@
 #include <vector>
 #include <glm\vec3.hpp>
 
-class Application3D;
-
 namespace Physics {
 
 	class Body;
@@ -12,7 +10,7 @@ namespace Physics {
 	class Scene
 	{
 	public:
-		Scene(Application3D* _app);
+		Scene();
 		~Scene();
 
 		void Start();
@@ -26,7 +24,6 @@ namespace Physics {
 		std::vector<Body*> m_objects;
 
 	private:
-		Application3D* m_app;
 	};
 
 }

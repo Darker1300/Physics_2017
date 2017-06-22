@@ -2,20 +2,20 @@
 
 #include "DEBUG_NEW_LEAK_DETECT.h"
 
+#include <glm\glm.hpp>
+
 #include <Gizmos.h>
 #include "Body.h"
 #include "Collision.h"
 #include "Plane.h"
 #include "Sphere.h"
 #include "AABB.h"
-#include "Application3D.h"
 
 using namespace Physics;
 
-Scene::Scene(Application3D* _app)
+Scene::Scene()
 	: m_objects()
 	, m_gravity(0, -9.8f, 0)
-	, m_app(_app)
 {
 	Start();
 }
